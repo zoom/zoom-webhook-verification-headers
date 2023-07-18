@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express');
 const bodyParser = require('body-parser');
 const crypto = require('crypto');
@@ -7,52 +8,49 @@ const port = 4000; // Choose a port number that suits your needs
 
 // Middleware to parse JSON request body
 app.use(bodyParser.json());
-<<<<<<< HEAD
-
-const ZOOM_WEBHOOK_SECRET_TOKEN = "<token>"
-=======
 const ZOOM_WEBHOOK_SECRET_TOKEN = process.env.ZOOM_WEBHOOK_SECRET_TOKEN
->>>>>>> 99991e1 (minor changes)
 
-// Middleware for Basic Authentication
+// Middleware for Custom Header Authentication
 app.use((req, res, next) => {
-  const authHeader = req.headers.authorization;
+  const customHeaderKey = process.env.Zoom_Webhook_Custom_Key;
+  const customHeaderValue = req.headers[customHeaderKey];
 
-  if (authHeader) {
-    const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
-    const username = auth[0];
-    const password = auth[1];
+  // Check if the custom header value matches
+  if (customHeaderValue === process.env.Zoom_Webhook_Custom_Secret) {
+    console.log('Verified Header', req.headers)
+    console.log('Verified webhook:', req.body);
+    return next(); // Proceed to the next middleware or route handler
 
-    // Compare the username and password with your desired credentials
-    if (username === 'abc' && password === 'abc') {
-      return next(); // Proceed to the next middleware or route handler
-    }
   }
 
-  // Authentication failed, send 401 Unauthorized response
-  res.set('WWW-Authenticate', 'Basic realm="Authorization Required"');
-  res.status(401).send('Unauthorized');
+  if (customHeaderValue !== process.env.Zoom_Webhook_Custom_Secret) {
+    console.log('Unverified Header', req.headers)
+    console.log('Unverified webhook:', req.body);
+    // Authentication failed, send 401 Unauthorized response
+    res.status(401).send('Unauthorized');
+  }
 });
 
 // Webhook endpoint
-app.post('/webhook', (req, res) => {
+app.post('/webhook4', (req, res) => {
   const webhookEvent = req.body.event;
-  
+
+  // Validating the Webhook Endpoint URL
   if (webhookEvent === 'endpoint.url_validation') {
     const plainToken = req.body.payload.plainToken;
     const hashedToken = crypto.createHmac('sha256', ZOOM_WEBHOOK_SECRET_TOKEN)
-                            .update(plainToken)
-                            .digest('hex');
-    
+      .update(plainToken)
+      .digest('hex');
+
     const responseJson = {
       plainToken: plainToken,
       encryptedToken: hashedToken
     };
-    
+
     res.status(200).json(responseJson);
+
+    console.log(`Webhook Endpoint URL validated by Zoom`);
   } else {
-    // Handle other webhook events here
-    console.log('Received webhook:', req.body);
 
     // Send a response to acknowledge the webhook
     res.sendStatus(200);
