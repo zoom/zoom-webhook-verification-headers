@@ -8,7 +8,6 @@ const port = 4000; // Choose a port number that suits your needs
 
 // Middleware to parse JSON request body
 app.use(bodyParser.json());
-
 const ZOOM_WEBHOOK_SECRET_TOKEN = process.env.ZOOM_WEBHOOK_SECRET_TOKEN
 
 // Middleware for Basic Authentication
