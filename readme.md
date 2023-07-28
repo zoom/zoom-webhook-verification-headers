@@ -1,4 +1,4 @@
-# Zoom Webhook Authentication Servers
+# Zoom Webhook Verification Headers
 
 This guide will help you set up three different Express servers that implement distinct types of authentication: Basic Authentication, Token Authentication, and Custom Header Authentication. Each server responds to a specific webhook event named 'endpoint.url_validation'. The servers will verify incoming requests based on their respective authentication method and either proceed with the request or return a 401 Unauthorized response.
 
