@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Basic Authentication Webhook Server with Node.js and Express
+=======
+# Zoom Webhook Verification Headers
+>>>>>>> 84a8cdf (Update readme.md)
 
 This readme will guide you through setting up a basic Express server that uses Basic Authentication and responds to a specific webhook event named 'endpoint.url_validation'. The server takes a request, checks the Basic Authentication credentials from the Authorization header, and either allows the request to proceed or returns a 401 Unauthorized response.
 
